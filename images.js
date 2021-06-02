@@ -39,6 +39,37 @@ function getImage() {
 });
 }
 
+function showAssignedImages() {
+  const emailRegexp = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+  if (emailRegexp.test(email.value)) {
+    console.log('validemail');
+    console.log(document.cookie);
+    let userImages = getCookie(email.value);
+    if (userImages != "") {
+      assignedImagesContainer.textContent = '';
+      console.log(userImages)
+      let imagesList = userImages.split(',');
+      console.log(imagesList);
+      let totalImages = imagesList.length - 1;
+      for (let i = 0; i < totalImages; i++) {
+        let img = document.createElement('img');
+        let attrs = imagesList[i].split('_');
+        console.log(attrs[3]);
+        let link = generateUrl(attrs[0], attrs[1], attrs[2], attrs[3], attrs[4]);
+        img.setAttribute('src', link);
+        assignedImagesContainer.appendChild(img);
+      }
+
+    } else {
+      assignedImagesContainer.textContent = 'No images assigned to this email address.';
+    }
+     
+
+  } else {
+    document.write('Invalid email address');
+  }
+}
+
 function setCookie(cname, cvalue, exdays) {
   var d = new Date();
   d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
@@ -98,36 +129,7 @@ addImage.addEventListener('click', function() {
   }
 })
 
-showImages.addEventListener('click', function() {
-  const emailRegexp = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-  if (emailRegexp.test(email.value)) {
-    console.log('validemail');
-    console.log(document.cookie);
-    let userImages = getCookie(email.value);
-    if (userImages != "") {
-      assignedImagesContainer.textContent = '';
-      console.log(userImages)
-      let imagesList = userImages.split(',');
-      console.log(imagesList);
-      let totalImages = imagesList.length - 1;
-      for (let i = 0; i < totalImages; i++) {
-        let img = document.createElement('img');
-        let attrs = imagesList[i].split('_');
-        console.log(attrs[3]);
-        let link = generateUrl(attrs[0], attrs[1], attrs[2], attrs[3], attrs[4]);
-        img.setAttribute('src', link);
-        assignedImagesContainer.appendChild(img);
-      }
-
-    } else {
-      assignedImagesContainer.textContent = 'No images assigned to this email address.';
-    }
-     
-
-  } else {
-    document.write('Invalid email address');
-  }
-})
+showImages.addEventListener('click', showAssignedImages);
 
 deleteImages.addEventListener('click', function() {
   const emailRegexp = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
@@ -136,7 +138,7 @@ deleteImages.addEventListener('click', function() {
     console.log(document.cookie);
     setCookie(email.value, "", -30);
     console.log(document.cookie);
-
+    showAssignedImages();
   } else {
     document.write('Invalid email address');
   }
