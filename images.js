@@ -17,7 +17,6 @@ function generateUrl(id, width, height, grayscale, blurLevel, image) {
   link += 'id/' + id + '/' + width + '/' + height;
         if (grayscale === 'true' || grayscale === true) {
           link += '?grayscale'
-
           if (blurLevel > 0) {
             link += '&blur=' + blurLevel;
           }
@@ -27,52 +26,35 @@ function generateUrl(id, width, height, grayscale, blurLevel, image) {
   image.setAttribute('src', link);
 }
 
-function getImageId(url, callback) {
+function getImage(url, callback) {
   const xhr = new XMLHttpRequest();
   xhr.open('GET', url);
-  xhr.onload = () => {
+  xhr.onload = function() {
     if(xhr.status === 200) {
-      //parse the response text as json
-      //let data = JSON.parse(xhr.responseText);
-      console.log('success');
       picId = xhr.getResponseHeader('picsum-id');
-    return generateUrl(picId, width.value, height.value, grayScale.checked, blurLevel.value, randomImage);
+    return callback(picId, width.value, height.value, grayScale.checked, blurLevel.value, randomImage);
     }
   };
   xhr.send();
 }
 
-
-function getImage() {
-  console.log('clicked');
-  getImageId('https://picsum.photos/100', generateUrl)
-}
-
 function showAssignedImages() {
   const emailRegexp = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
   if (emailRegexp.test(email.value)) {
-    console.log('validemail');
-    console.log(document.cookie);
     let userImages = getCookie(email.value);
     if (userImages != "") {
       assignedImagesContainer.textContent = '';
-      console.log(userImages)
       let imagesList = userImages.split(',');
-      console.log(imagesList);
       let totalImages = imagesList.length - 1;
       for (let i = 0; i < totalImages; i++) {
         let img = document.createElement('img');
         let attrs = imagesList[i].split('_');
-        console.log(attrs[3]);
         generateUrl(attrs[0], attrs[1], attrs[2], attrs[3], attrs[4], img);
         assignedImagesContainer.appendChild(img);
       }
-
     } else {
       assignedImagesContainer.textContent = 'No images assigned to this email address.';
     }
-     
-
   } else {
     document.write('Invalid email address');
   }
@@ -100,21 +82,8 @@ function getCookie(cname) {
   return "";
 }
 
-/*function checkCookie() {
-  const acceptCookies = getCookie("acceptCookies");
-  if (acceptCookies != 'true') {
-    document.querySelector('body').style.overflow = 'hidden';
-    document.querySelector('.cookie_consent').style.display = 'flex';
-    document.querySelector('.cookie_consent a').onclick = function() {
-      setCookie('acceptCookies', true, 30)
-      document.querySelector('.cookie_consent').style.display = 'none';
-      document.querySelector('body').style.overflow = 'auto';
-  };
-  }
-}*/
-
 imageBtn.addEventListener('click', function() {
-  getImage();
+  getImage('https://picsum.photos/100', generateUrl);
 })
 
 editBtn.addEventListener('click', function() {
@@ -124,15 +93,11 @@ editBtn.addEventListener('click', function() {
 addImage.addEventListener('click', function() {
   const emailRegexp = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
   if (emailRegexp.test(email.value)) {
-    console.log('validemail');
-    console.log(document.cookie);
     let imageToAdd = getCookie(email.value) + picId + '_' + width.value + '_' + height.value + '_' + grayScale.checked + '_' + blurLevel.value + ',';
     setCookie(email.value, imageToAdd);
-    //if (getCookie(email.value) 
-    console.log(document.cookie)
-    getImage();
+    getImage('https://picsum.photos/100', generateUrl);
   } else {
-    document.write('Invalid email address');
+    assignedImagesContainer.textContent = 'Invalid email address';
   }
 })
 
@@ -141,14 +106,11 @@ showImages.addEventListener('click', showAssignedImages);
 deleteImages.addEventListener('click', function() {
   const emailRegexp = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
   if (emailRegexp.test(email.value)) {
-    console.log('validemail');
-    console.log(document.cookie);
     setCookie(email.value, "", -30);
-    console.log(document.cookie);
     showAssignedImages();
   } else {
-    document.write('Invalid email address');
+    assignedImagesContainer.textContent = 'Invalid email address';
   }
 })
 
-getImage();
+getImage('https://picsum.photos/100', generateUrl);
