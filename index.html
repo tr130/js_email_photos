@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Javascript Email Image Assigner</title>
+</head>
+<body>
+  <h1>Javascript Email Image Assigner</h1>
+  <div id="image_container">
+    <img id="random_img" src=""/>
+  </div>
+
+  <label for="grayscale">Black and White?<input id="grayscale" name="grayscale" type="checkbox" value="grayscale"></label>
+  Blur: <input type="range" min="0" max="10" step="1" value="0" id="blur">
+  Width: <input id="width" type="number" min="1" max="1000" value="600">
+  Height: <input id="height" type="number" min="1" max="1000" value="400">
+    <button id="edit_image_btn">Edit this picture</button>
+    <button id="image_btn">Get a new picture</button>
+
+  <hr>
+  Email: <input type="email" id="email">
+  <button id="add_img_btn">Assign this image to my email address</button>
+  <button id="show_imgs_btn">Show my assigned images</button>
+  <button id="delete_imgs_btn">Delete my assigned images</button>
+
+  <hr>
+  <div id="assigned_imgs_container"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script src="images.js"></script>
+</body>
+</html>
