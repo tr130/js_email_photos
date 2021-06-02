@@ -12,7 +12,7 @@ const deleteImages = document.querySelector('#delete_imgs_btn');
 const assignedImagesContainer = document.querySelector('#assigned_imgs_container');
 let picId;
 
-function generateUrl(id, width, height, grayscale, blurLevel) {
+function generateUrl(id, width, height, grayscale, blurLevel, image) {
   let link = 'https://picsum.photos/'
   link += 'id/' + id + '/' + width + '/' + height;
         if (grayscale === 'true' || grayscale === true) {
@@ -24,19 +24,28 @@ function generateUrl(id, width, height, grayscale, blurLevel) {
         } else if (blurLevel > 0) {
           link += '?blur=' + blurLevel;
         }
-  return link;
+  image.setAttribute('src', link);
 }
+
+function getImageId(url, callback) {
+  const xhr = new XMLHttpRequest();
+  xhr.open('GET', url);
+  xhr.onload = () => {
+    if(xhr.status === 200) {
+      //parse the response text as json
+      //let data = JSON.parse(xhr.responseText);
+      console.log('success');
+      picId = xhr.getResponseHeader('picsum-id');
+    return generateUrl(picId, width.value, height.value, grayScale.checked, blurLevel.value, randomImage);
+    }
+  };
+  xhr.send();
+}
+
 
 function getImage() {
   console.log('clicked');
-  axios.get('https://picsum.photos/600/400')
-      .then(function(response) {
-        //console.log(response.headers["picsum-id"])
-        picId = response.headers["picsum-id"]
-
-        let link = generateUrl(picId, width.value, height.value, grayScale.checked, blurLevel.value);
-        randomImage.setAttribute('src', link);
-});
+  getImageId('https://picsum.photos/100', generateUrl)
 }
 
 function showAssignedImages() {
@@ -55,8 +64,7 @@ function showAssignedImages() {
         let img = document.createElement('img');
         let attrs = imagesList[i].split('_');
         console.log(attrs[3]);
-        let link = generateUrl(attrs[0], attrs[1], attrs[2], attrs[3], attrs[4]);
-        img.setAttribute('src', link);
+        generateUrl(attrs[0], attrs[1], attrs[2], attrs[3], attrs[4], img);
         assignedImagesContainer.appendChild(img);
       }
 
@@ -110,8 +118,7 @@ imageBtn.addEventListener('click', function() {
 })
 
 editBtn.addEventListener('click', function() {
-  let link = generateUrl(picId, width.value, height.value, grayScale.checked, blurLevel.value);
-  randomImage.setAttribute('src', link);
+  generateUrl(picId, width.value, height.value, grayScale.checked, blurLevel.value, randomImage);
 })
 
 addImage.addEventListener('click', function() {
