@@ -56,7 +56,7 @@ function showAssignedImages() {
       assignedImagesContainer.textContent = 'No images assigned to this email address.';
     }
   } else {
-    document.write('Invalid email address');
+    assignedImagesContainer.textContent = 'Invalid email address';
   }
 }
 
