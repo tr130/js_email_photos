@@ -13,6 +13,9 @@ const assignedImagesContainer = document.querySelector('#assigned_imgs_container
 let picId;
 
 function generateUrl(id, width, height, grayscale, blurLevel, image) {
+  if (width > window.innerWidth) {
+    alert('Width too wide');
+  } else {
   let link = 'https://picsum.photos/'
   link += 'id/' + id + '/' + width + '/' + height;
         if (grayscale === 'true' || grayscale === true) {
@@ -24,6 +27,8 @@ function generateUrl(id, width, height, grayscale, blurLevel, image) {
           link += '?blur=' + blurLevel;
         }
   image.setAttribute('src', link);
+  image.setAttribute('alt', 'random image');
+      }
 }
 
 function getImage(url, callback) {
@@ -99,6 +104,7 @@ addImage.addEventListener('click', function() {
   } else {
     assignedImagesContainer.textContent = 'Invalid email address';
   }
+  showAssignedImages();
 })
 
 showImages.addEventListener('click', showAssignedImages);
